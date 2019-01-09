@@ -2,6 +2,7 @@
 
 const git = require('simple-git/promise')()
 const Jimp = require('jimp')
+const fs = require('fs-extra')
 
 async function main(){
 	const font = await Jimp.loadFont(Jimp.FONT_SANS_12_BLACK)
@@ -9,6 +10,9 @@ async function main(){
 	const imageBackground = 'fff'
 	const lineIndentPx = 5
 	const lineHeightPx = 16
+	const directoryPath = '_DIFFSHOTS'
+
+	await fs.emptyDir(`./${directoryPath}`)
 
 	const commits = JSON.parse(JSON.stringify((await git.log()).all))
 	commits.forEach(async (commit, commitIndex)=>{
@@ -22,7 +26,7 @@ async function main(){
 		diffByLine.forEach((line, lineIndex)=>{
 			image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
 		})
-		await image.writeAsync(`./${commit.hash}.png`)
+		await image.writeAsync(`./${directoryPath}/${commit.hash}.png`)
 	})
 }
 
