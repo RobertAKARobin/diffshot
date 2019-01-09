@@ -49,6 +49,13 @@ async function main(){
 
 	const markdown = [
 		'# Diffshot',
+		'## Contents',
+		commits.map(commit=>[
+			`- [${commit.hash}: ${commit.message}](#${commit.anchor})`,
+			commit.files.map(file=>[
+				`\t- [${file.name}](#${file.anchor})`
+			])
+		]),
 		commits.map(commit=>[
 			`# ${commit.message}`,
 			`> ${commit.hash}`,
@@ -59,7 +66,7 @@ async function main(){
 		])
 	]
 
-	await fs.writeFileSync('./_DIFFSHOT.md', flatten(markdown).join('\n\n'))
+	await fs.writeFileSync('./_DIFFSHOT.md', flatten(markdown).join('\n'))
 }
 
 function anchorify(input){
