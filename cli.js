@@ -13,14 +13,16 @@ async function main(){
 	const commits = JSON.parse(JSON.stringify((await git.log()).all))
 	commits.forEach(async (commit, commitIndex)=>{
 		const previousCommit = commits[commitIndex + 1]
-		if(previousCommit){
-			const diffByLine = (await git.diff([`${previousCommit.hash}..${commit.hash}`])).split('\n')
-			const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
-			diffByLine.forEach(async (line, lineIndex)=>{
-				image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
-			})
-			await image.writeAsync(`./${commit.hash}.png`)
-		}
+		const previousHash = (previousCommit
+			? previousCommit.hash
+			: '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
+		const diff = await git.diff([`${previousHash}..${commit.hash}`])
+		const diffByLine = diff.split('\n')
+		const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
+		diffByLine.forEach((line, lineIndex)=>{
+			image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
+		})
+		await image.writeAsync(`./${commit.hash}.png`)
 	})
 }
 
