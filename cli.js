@@ -14,32 +14,50 @@ async function main(){
 
 	await fs.emptyDir(`./${directoryName}`)
 
-	const commits = JSON.parse(JSON.stringify((await git.log()).all))
-	const commitMarkdowns = [`# Diffshot`]
-	for(let commitIndex = 0, commit = null; commit = commits[commitIndex]; commitIndex += 1){
-		const previousCommit = commits[commitIndex + 1]
-		const previousHash = (previousCommit
-			? previousCommit.hash
-			: '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
-		const diff = await git.diff([`${previousHash}..${commit.hash}`])
-		const diffByLine = diff.split('\n')
-		const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
-		const imagePath = `./${directoryName}/${commit.hash}.png`
+	const log = JSON.parse(JSON.stringify((await git.log()).all))
+	for(let commitIndex = 0, rawCommit = null; rawCommit = log[commitIndex]; commitIndex += 1){
+		const previousRawCommit = log[commitIndex + 1]
+		const previousHash = (previousRawCommit ?  previousRawCommit.hash.substring(0, 6) : '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
+		const fileNames = (await git.diffSummary([`${previousHash}..${rawCommit.hash}`])).files.map(file=>file.file).sort()
+		const commit = {
+			name: rawCommit.message,
+			abbr: rawCommit.message.toLowerCase().substring(0, 50)
+				.replace(/ /g, "-")
+				.replace(/[^a-zA-Z0-9\-_]/g, "")
+				.replace(/-{2,}/g, "-"),
+			hash: rawCommit.hash.substring(0, 6),
+			prevHash: previousHash,
+			files: fileNames.map(fileName=>{
+				return {
+					name: fileName,
+					abbr: fileName.toLowerCase().substring(0, 50)
+						.replace(/ /g, "-")
+						.replace(/[^a-zA-Z0-9\-_\.]/g, "")
+						.replace(/-{2,}/g, "-")
+				}
+			})
+		}
+		for(let fileIndex = 0, file = null; file = commit.files[fileIndex]; fileIndex += 1){
+			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, file.name])
+			const diffByLine = diff.split('\n')
+			const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
+			const imagePath = `./${directoryName}/${commit.abbr}.${file.abbr}.png`
+	
+			diffByLine.forEach((line, lineIndex)=>{
+				image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
+			})
+			await image.writeAsync(imagePath)
+		}
 
-		diffByLine.forEach((line, lineIndex)=>{
-			image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
-		})
-		await image.writeAsync(imagePath)
+// 		commitMarkdowns.push(`
+// ## ${commit.message}
 
-		commitMarkdowns.push(`
-## ${commit.message}
+// > ${commit.hash}
 
-> ${commit.hash}
-
-![${commit.message}](${imagePath})`)
+// ![${commit.message}](${imagePath})`)
 	}
 
-	await fs.writeFileSync('./_DIFFSHOT.md', commitMarkdowns.join('\n'))
+	// await fs.writeFileSync('./_DIFFSHOT.md', commitMarkdowns.join('\n'))
 }
 
 main()
