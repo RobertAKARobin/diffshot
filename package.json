@@ -10,6 +10,7 @@
   "license": "ISC",
   "bin": "./cli.js",
   "dependencies": {
+    "jimp": "^0.6.0",
     "simple-git": "^1.107.0"
   }
 }
