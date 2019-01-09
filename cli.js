@@ -10,12 +10,13 @@ async function main(){
 	const imageBackground = 'fff'
 	const lineIndentPx = 5
 	const lineHeightPx = 16
-	const directoryPath = '_DIFFSHOTS'
+	const directoryName = '_DIFFSHOT'
 
-	await fs.emptyDir(`./${directoryPath}`)
+	await fs.emptyDir(`./${directoryName}`)
 
 	const commits = JSON.parse(JSON.stringify((await git.log()).all))
-	commits.forEach(async (commit, commitIndex)=>{
+	const commitMarkdowns = [`# Diffshot`]
+	for(let commitIndex = 0, commit = null; commit = commits[commitIndex]; commitIndex += 1){
 		const previousCommit = commits[commitIndex + 1]
 		const previousHash = (previousCommit
 			? previousCommit.hash
@@ -23,11 +24,22 @@ async function main(){
 		const diff = await git.diff([`${previousHash}..${commit.hash}`])
 		const diffByLine = diff.split('\n')
 		const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
+		const imagePath = `./${directoryName}/${commit.hash}.png`
+
 		diffByLine.forEach((line, lineIndex)=>{
 			image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
 		})
-		await image.writeAsync(`./${directoryPath}/${commit.hash}.png`)
-	})
+		await image.writeAsync(imagePath)
+
+		commitMarkdowns.push(`
+## ${commit.message}
+
+> ${commit.hash}
+
+![${commit.message}](${imagePath})`)
+	}
+
+	await fs.writeFileSync('./_DIFFSHOT.md', commitMarkdowns.join('\n'))
 }
 
 main()
