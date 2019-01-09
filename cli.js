@@ -29,7 +29,7 @@ async function main(){
 				return {
 					name: fileName,
 					imagePath: `./${directoryName}/${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
-					anchor: `${anchorify(rawCommit.message)}${anchorify(fileName)}`
+					anchor: `${anchorify(rawCommit.message)}-${anchorify(fileName)}`
 				}
 			})
 		}
