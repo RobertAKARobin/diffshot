@@ -9,5 +9,7 @@
   "author": "",
   "license": "ISC",
   "bin": "./cli.js",
-  "dependencies": {}
+  "dependencies": {
+    "simple-git": "^1.107.0"
+  }
 }

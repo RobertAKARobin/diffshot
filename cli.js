@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
-const [,, ...args] = process.argv
+const git = require('simple-git/promise')()
 
-console.log(`Args: ${args.join('; ')}`)
+async function main(){
+	const log = await git.log()
+	console.log(log)
+}
+
+main()
