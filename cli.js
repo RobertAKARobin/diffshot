@@ -5,11 +5,11 @@ const Jimp = require('jimp')
 const fs = require('fs-extra')
 
 async function main(){
-	const font = await Jimp.loadFont(Jimp.FONT_SANS_12_BLACK)
+	const font = await Jimp.loadFont('./fonts/inconsolata_16_black.fnt')
 	const imageWidth = 800
 	const imageBackground = 'fff'
 	const lineIndentPx = 5
-	const lineHeightPx = 16
+	const lineHeightPx = 20
 	const directoryName = '_DIFFSHOT'
 
 	await fs.emptyDir(`./${directoryName}`)
