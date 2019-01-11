@@ -10,7 +10,8 @@ async function main(){
 		white:	rgb(font.pages[0].clone(), [255, 255, 255]),
 		red:	rgb(font.pages[0].clone(), [255]),
 		green:	rgb(font.pages[0].clone(), [, 255]),
-		cyan:	rgb(font.pages[0].clone(), [, 255, 255])
+		yellow: rgb(font.pages[0].clone(), [255, 255]),
+		cyan:	rgb(font.pages[0].clone(), [, 255, 255]),
 	}
 	const imageWidth = 800
 	const imageBackground = '000'
@@ -46,12 +47,16 @@ async function main(){
 			const diffByLine = diff.split('\n')
 			const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
 	
+			diffByLine.unshift(
+				`# ${commit.hash}: ${commit.message}`
+			)
 			diffByLine.forEach((line, lineIndex)=>{
 				let glyphColor
 				switch(line.substring(0,1)){
 					case '-': glyphColor = glyphs.red; break;
 					case '+': glyphColor = glyphs.green; break;
 					case '@': glyphColor = glyphs.cyan; break;
+					case '#': glyphColor = glyphs.yellow; break;
 					default:  glyphColor = glyphs.white
 				}
 				font.pages = [glyphColor]
