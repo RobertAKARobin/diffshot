@@ -55,7 +55,7 @@ async function main(){
 					default:  glyphColor = glyphs.white
 				}
 				font.pages = [glyphColor]
-				image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
+				image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line.replace(/\t/g, '   '))
 			})
 			await image.writeAsync(file.imagePath)
 		}
