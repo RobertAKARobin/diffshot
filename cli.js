@@ -5,9 +5,15 @@ const Jimp = require('jimp')
 const fs = require('fs-extra')
 
 async function main(){
-	const font = await Jimp.loadFont('./fonts/inconsolata_16_black.fnt')
+	const font = await Jimp.loadFont('./fonts/inconsolata_16.fnt')
+	const glyphs = {
+		white:	rgb(font.pages[0].clone(), [255, 255, 255]),
+		red:	rgb(font.pages[0].clone(), [255]),
+		green:	rgb(font.pages[0].clone(), [, 255]),
+		cyan:	rgb(font.pages[0].clone(), [, 255, 255])
+	}
 	const imageWidth = 800
-	const imageBackground = 'fff'
+	const imageBackground = '000'
 	const lineIndentPx = 5
 	const lineHeightPx = 20
 	const directoryName = '_DIFFSHOT'
@@ -41,6 +47,14 @@ async function main(){
 			const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
 	
 			diffByLine.forEach((line, lineIndex)=>{
+				let glyphColor
+				switch(line.substring(0,1)){
+					case '-': glyphColor = glyphs.red; break;
+					case '+': glyphColor = glyphs.green; break;
+					case '@': glyphColor = glyphs.cyan; break;
+					default:  glyphColor = glyphs.white
+				}
+				font.pages = [glyphColor]
 				image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line)
 			})
 			await image.writeAsync(file.imagePath)
@@ -74,6 +88,13 @@ function anchorify(input){
 		.toLowerCase()
 		.replace(/ /g, "-")
 		.replace(/[^a-zA-Z0-9\-_]/g, "")
+}
+
+function rgb(jimp, rgb){
+	const colors = ['red', 'green', 'blue']
+	return jimp.color(rgb.map((value, index)=>{
+		return {apply: colors[index], params: [value || 0]}
+	}))
 }
 
 function flatten(nestedArray){
