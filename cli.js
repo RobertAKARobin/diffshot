@@ -5,6 +5,7 @@ const Jimp = require('jimp')
 const fs = require('fs-extra')
 
 async function main(){
+	const args = process.argv.slice(2)
 	const font = await Jimp.loadFont('./fonts/inconsolata_16.fnt')
 	const glyphs = {
 		white:	rgb(font.pages[0].clone(), [255, 255, 255]),
@@ -26,7 +27,7 @@ async function main(){
 	for(let commitIndex = 0, rawCommit = null; rawCommit = log[commitIndex]; commitIndex += 1){
 		const previousRawCommit = log[commitIndex + 1]
 		const previousHash = (previousRawCommit ?  previousRawCommit.hash.substring(0, 8) : '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
-		const fileNames = (await git.diffSummary([`${previousHash}..${rawCommit.hash}`])).files.map(file=>file.file).sort()
+		const fileNames = (await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(args))).files.map(file=>file.file).sort()
 		const commit = {
 			message: rawCommit.message,
 			anchor: anchorify(rawCommit.message),
