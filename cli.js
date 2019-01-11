@@ -36,7 +36,7 @@ async function main(){
 		commits.push(commit)
 
 		for(let fileIndex = 0, file = null; file = commit.files[fileIndex]; fileIndex += 1){
-			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, file.name])
+			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, '--', file.name])
 			const diffByLine = diff.split('\n')
 			const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
 	
