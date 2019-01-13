@@ -4,30 +4,42 @@ const git = require('simple-git/promise')()
 const Jimp = require('jimp')
 const fs = require('fs-extra')
 
+const config = {
+	imageWidthPx: 800,
+	imageBgColorHex: '000',
+	textLineIndentPx: 5,
+	textLineHeightPx: 20,
+	textColorMain: [255, 255, 255],
+	textColorDelete: [255],
+	textColorAdd: [, 255],
+	textColorHeadline: [255, 255],
+	textColorMeta: [, 255, 255],
+	outputDirectory: '_DIFFSHOT',
+	outputDocName: 'README.md',
+}
+
+main()
+
 async function main(){
 	const args = process.argv.slice(2)
 	const font = await Jimp.loadFont('./fonts/inconsolata_16.fnt')
 	const glyphs = {
-		white:	rgb(font.pages[0].clone(), [255, 255, 255]),
-		red:	rgb(font.pages[0].clone(), [255]),
-		green:	rgb(font.pages[0].clone(), [, 255]),
-		yellow: rgb(font.pages[0].clone(), [255, 255]),
-		cyan:	rgb(font.pages[0].clone(), [, 255, 255]),
+		main:		rgb(font.pages[0].clone(), config.textColorMain),
+		delete:		rgb(font.pages[0].clone(), config.textColorDelete),
+		add:		rgb(font.pages[0].clone(), config.textColorAdd),
+		headline:	rgb(font.pages[0].clone(), config.textColorHeadline),
+		meta:		rgb(font.pages[0].clone(), config.textColorMeta),
 	}
-	const imageWidth = 800
-	const imageBackground = '000'
-	const lineIndentPx = 5
-	const lineHeightPx = 20
-	const directoryName = '_DIFFSHOT'
 
-	await fs.emptyDir(`./${directoryName}`)
+	await fs.emptyDir(`./${config.outputDirectory}`)
 
 	const log = JSON.parse(JSON.stringify((await git.log()).all))
 	const commits = []
 	for(let commitIndex = 0, rawCommit = null; rawCommit = log[commitIndex]; commitIndex += 1){
 		const previousRawCommit = log[commitIndex + 1]
 		const previousHash = (previousRawCommit ?  previousRawCommit.hash.substring(0, 8) : '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
-		const fileNames = (await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(args))).files.map(file=>file.file).sort()
+		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(args))
+		const fileNames = diffSummary.files.map(file=>file.file).sort()
 		const commit = {
 			message: rawCommit.message,
 			anchor: anchorify(rawCommit.message),
@@ -36,7 +48,7 @@ async function main(){
 			files: fileNames.map(fileName=>{
 				return {
 					name: fileName,
-					imagePath: `./${directoryName}/${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
+					imagePath: `./${config.outputDirectory}/${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
 					anchor: `${anchorify(rawCommit.message)}-${anchorify(fileName)}`
 				}
 			})
@@ -46,7 +58,7 @@ async function main(){
 		for(let fileIndex = 0, file = null; file = commit.files[fileIndex]; fileIndex += 1){
 			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, '--', file.name])
 			const diffByLine = diff.split('\n')
-			const image = await (new Jimp(imageWidth, (lineHeightPx * (diffByLine.length - 1)), imageBackground))
+			const image = await (new Jimp(config.imageWidthPx, (config.textLineHeightPx * (diffByLine.length - 1)), config.imageBgColorHex))
 	
 			diffByLine.unshift(
 				`# ${commit.hash}: ${commit.message}`
@@ -54,14 +66,14 @@ async function main(){
 			diffByLine.forEach((line, lineIndex)=>{
 				let glyphColor
 				switch(line.substring(0,1)){
-					case '-': glyphColor = glyphs.red; break;
-					case '+': glyphColor = glyphs.green; break;
-					case '@': glyphColor = glyphs.cyan; break;
-					case '#': glyphColor = glyphs.yellow; break;
-					default:  glyphColor = glyphs.white
+					case '-': glyphColor = glyphs.delete; break;
+					case '+': glyphColor = glyphs.add; break;
+					case '@': glyphColor = glyphs.meta; break;
+					case '#': glyphColor = glyphs.headline; break;
+					default:  glyphColor = glyphs.main
 				}
 				font.pages = [glyphColor]
-				image.print(font, lineIndentPx, (lineHeightPx * lineIndex), line.replace(/\t/g, '   '))
+				image.print(font, config.textLineIndentPx, (config.textLineHeightPx * lineIndex), line.replace(/\t/g, '   '))
 			})
 			await image.writeAsync(file.imagePath)
 		}
@@ -86,7 +98,7 @@ async function main(){
 		])
 	]
 
-	await fs.writeFileSync('./_DIFFSHOT.md', flatten(markdown).join('\n'))
+	await fs.writeFileSync(`${config.outputDirectory}/${config.outputDocName}`, flatten(markdown).join('\n'))
 }
 
 function anchorify(input){
@@ -121,5 +133,3 @@ function pathify(input){
 		.replace(/[^a-zA-Z0-9-_\.]/g, "")
 		.replace(/-{2,}/g, "-")
 }
-
-main()

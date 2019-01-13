@@ -1,17 +1,14 @@
 {
-  "name": "diffshot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "bin": "./cli.js",
+  "author": "Robin Thomas <contact@robertakarobin.com> (https://www.robertakarobin.com)",
+  "bin": "./diffshot.js",
   "dependencies": {
     "fs-extra": "^7.0.1",
     "jimp": "^0.6.0",
     "simple-git": "^1.107.0"
-  }
+  },
+  "description": "Cycle through a Git log and output a .png of the diff of each file in each commit.",
+  "homepage": "https://github.com/RobertAKARobin/diffshot-js",
+  "license": "ISC",
+  "name": "diffshot",
+  "version": "1.0.0"
 }
