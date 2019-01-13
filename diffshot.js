@@ -7,6 +7,7 @@ const fs = require('fs-extra')
 const config = {
 	imageWidthPx: 800,
 	imageBgColorHex: '000',
+	textFontFile: `${__dirname}/fonts/inconsolata_16.fnt`,
 	textLineIndentPx: 5,
 	textLineHeightPx: 20,
 	textColorMain: [255, 255, 255],
@@ -22,7 +23,7 @@ main()
 
 async function main(){
 	const args = process.argv.slice(2)
-	const font = await Jimp.loadFont('./fonts/inconsolata_16.fnt')
+	const font = await Jimp.loadFont(config.textFontFile)
 	const glyphs = {
 		main:		rgb(font.pages[0].clone(), config.textColorMain),
 		delete:		rgb(font.pages[0].clone(), config.textColorDelete),
