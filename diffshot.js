@@ -41,7 +41,7 @@ async function main(){
 
 	await fs.emptyDir(`./${config.outputImagePath}`)
 
-	const log = JSON.parse(JSON.stringify((await git.log()).all))
+	const log = JSON.parse(JSON.stringify((await git.log(config._)).all))
 	const commits = []
 	for(let commitIndex = 0, rawCommit = null; rawCommit = log[commitIndex]; commitIndex += 1){
 		const previousRawCommit = log[commitIndex + 1]
