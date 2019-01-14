@@ -34,7 +34,9 @@ main()
 async function main(){
 	const config = {}
 	for(let configProperty in defaultConfig){
-		config[configProperty] = (argv[configProperty] || defaultConfig[configProperty])
+		const inputValue = argv[configProperty]
+		const defaultValue = defaultConfig[configProperty]
+		config[configProperty] = (inputValue === undefined ? defaultValue : inputValue)
 	}
 	if(typeof config.exclude === 'string'){
 		config.exclude = [config.exclude]
