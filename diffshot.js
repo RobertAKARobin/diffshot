@@ -7,15 +7,15 @@ const argv = require('yargs').argv
 
 const defaultConfig = {
 	imageWidthPx: 800,
-	imageBgColorHex: '000',
+	imageBgColor: '000000',
 	textFontFile: `${__dirname}/fonts/inconsolata_16.fnt`,
 	textLineIndentPx: 5,
 	textLineHeightPx: 20,
-	textColorMain: [255, 255, 255],
-	textColorDelete: [255],
-	textColorAdd: [, 255],
-	textColorHeadline: [255, 255],
-	textColorMeta: [, 255, 255],
+	textColorMain: 'ffffff',
+	textColorDelete: 'ff0000',
+	textColorAdd: '00ff00',
+	textColorHeadline: 'ffff00',
+	textColorMeta: '00ffff',
 	outputImagePath: '_DIFFSHOT',
 	outputDocPath: '_DIFFSHOT/README.md',
 	_: '*'
@@ -31,11 +31,11 @@ async function main(){
 
 	const font = await Jimp.loadFont(config.textFontFile)
 	const glyphs = {
-		main:		rgb(font.pages[0].clone(), config.textColorMain),
-		delete:		rgb(font.pages[0].clone(), config.textColorDelete),
-		add:		rgb(font.pages[0].clone(), config.textColorAdd),
-		headline:	rgb(font.pages[0].clone(), config.textColorHeadline),
-		meta:		rgb(font.pages[0].clone(), config.textColorMeta),
+		main:		colorText(font.pages[0].clone(), config.textColorMain),
+		delete:		colorText(font.pages[0].clone(), config.textColorDelete),
+		add:		colorText(font.pages[0].clone(), config.textColorAdd),
+		headline:	colorText(font.pages[0].clone(), config.textColorHeadline),
+		meta:		colorText(font.pages[0].clone(), config.textColorMeta),
 	}
 
 	await fs.emptyDir(`./${config.outputImagePath}`)
@@ -65,7 +65,7 @@ async function main(){
 		for(let fileIndex = 0, file = null; file = commit.files[fileIndex]; fileIndex += 1){
 			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, '--', file.name])
 			const diffByLine = diff.split('\n')
-			const image = await (new Jimp(config.imageWidthPx, (config.textLineHeightPx * (diffByLine.length - 1)), config.imageBgColorHex))
+			const image = await (new Jimp(config.imageWidthPx, (config.textLineHeightPx * (diffByLine.length - 1)), config.imageBgColor))
 	
 			diffByLine.unshift(
 				`# ${commit.hash}: ${commit.message}`
@@ -115,10 +115,11 @@ function anchorify(input){
 		.replace(/[^a-zA-Z0-9\-_]/g, "")
 }
 
-function rgb(jimp, rgb){
+function colorText(jimp, hexInput){
 	const colors = ['red', 'green', 'blue']
-	return jimp.color(rgb.map((value, index)=>{
-		return {apply: colors[index], params: [value || 0]}
+	const hexSegments = hexInput.match(/.{2}/g).map(hex=>parseInt(hex, 16))
+	return jimp.color(colors.map((color, index)=>{
+		return {apply: color, params: [hexSegments[index] || 0]}
 	}))
 }
 
