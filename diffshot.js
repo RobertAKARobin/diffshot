@@ -29,6 +29,10 @@ async function main(){
 	for(let configProperty in defaultConfig){
 		config[configProperty] = (argv[configProperty] || defaultConfig[configProperty])
 	}
+	if(typeof config.exclude === 'string'){
+		config.exclude = [config.exclude]
+	}
+	config.exclude = config.exclude.map(fileName=>new RegExp(fileName))
 
 	const font = await Jimp.loadFont(config.textFontFile)
 	const glyphs = {
@@ -49,7 +53,7 @@ async function main(){
 		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`, '--'].concat(config._))
 		const fileNames = diffSummary.files
 			.map(file=>file.file)
-			.filter(fileName=>!config.exclude.includes(fileName))
+			.filter(fileName=>!config.exclude.find(regex=>regex.test(fileName)))
 			.sort()
 		const commit = {
 			message: rawCommit.message,
