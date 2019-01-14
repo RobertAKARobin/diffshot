@@ -5,45 +5,72 @@ const Jimp = require('jimp')
 const fs = require('fs-extra')
 const yargs = require('yargs')
 
-const defaultConfig = {
-	imageWidthPx: 800,
-	imageBgColor: '000000',
-	textFontFile: `${__dirname}/fonts/inconsolata_16.fnt`,
-	textLineIndentPx: 5,
-	textLineHeightPx: 20,
-	textColorMain: 'ffffff',
-	textColorDelete: 'ff0000',
-	textColorAdd: '00ff00',
-	textColorHeadline: 'ffff00',
-	textColorMeta: '00ffff',
-	outputImagePath: '_DIFFSHOT',
-	outputDocPath: '_DIFFSHOT/README.md',
-	filesToExclude: [
-		'.*-lock\.json$',
-		'.*\.fnt$'
-	],
-	_: '*'
-}
-
 yargs
 	.usage('$0 [<options>] [<commit> [<commit>]] [--] [<path>...]')
 	.alias('help', 'h')
 	.alias('version', 'v')
-
-const argv = yargs.argv
+	.options({
+		'filesToExclude': {
+			type: 'array',
+			default: [
+				'^.*-lock\.json$',
+				'^.*\.fnt$'
+			]
+		},
+		'outputImagePath': {
+			type: 'string',
+			default: '_DIFFSHOT'
+		},
+		'outputDocPath': {
+			type: 'string',
+			default: '_DIFFSHOT/README.md'
+		},
+		'textFontFile': {
+			type: 'string',
+			default: `${__dirname}/fonts/inconsolata_16.fnt`
+		},
+		'textLineIndentPx': {
+			type: 'number',
+			default: 5
+		},
+		'textLineHeightPx': {
+			type: 'number',
+			default: 20
+		},
+		'imageWidthPx': {
+			type: 'number',
+			default: 800
+		},
+		'imageBgColor': {
+			type: 'string',
+			default: '000000'
+		},
+		'textColorMain': {
+			type: 'string',
+			default: 'ffffff'
+		},
+		'textColorDelete': {
+			type: 'string',
+			default: 'ff0000'
+		},
+		'textColorAdd': {
+			type: 'string',
+			default: '00ff00'
+		},
+		'textColorHeadline': {
+			type: 'string',
+			default: 'ffff00'
+		},
+		'textColorMeta': {
+			type: 'string',
+			default: '00ffff'
+		}
+	})
 
 main()
 
 async function main(){
-	const config = {}
-	for(let configProperty in defaultConfig){
-		const inputValue = argv[configProperty]
-		const defaultValue = defaultConfig[configProperty]
-		config[configProperty] = (inputValue === undefined ? defaultValue : inputValue)
-	}
-	if(typeof config.filesToExclude === 'string'){
-		config.filesToExclude = [config.filesToExclude]
-	}
+	const config = JSON.parse(JSON.stringify(yargs.argv))
 	config.filesToExclude = config.filesToExclude.map(fileName=>new RegExp(fileName))
 
 	const font = await Jimp.loadFont(config.textFontFile)
