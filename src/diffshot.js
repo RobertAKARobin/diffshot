@@ -36,7 +36,35 @@ function pathify(input){
 		.replace(/-{2,}/g, "-")
 }
 
+const defaultConfig = {
+	filesToExclude: [
+		'^.*-lock.json$',
+		'^.*.fnt$'
+	],
+	outputImagePath: '_DIFFSHOT',
+	outputDocPath: '_DIFFSHOT/README.md',
+	fontFile: `${__dirname}/fonts/inconsolata_16.fnt`,
+	fontLineIndentPx: 5,
+	fontLineHeightPx: 20,
+	fontColorMain: 'ffffff',
+	fontColorDelete: 'ff0000',
+	fontColorAdd: '00ff00',
+	fontColorHeadline: 'ffff00',
+	fontColorMeta: '00ffff',
+	imageWidthPx: 800,
+	imageBgColor: '000000',
+}
 module.exports = async function(config){
+	for(let configProperty in defaultConfig){
+		if(config[configProperty] === undefined){
+			config[configProperty] = defaultConfig[configProperty]
+		}
+	}
+	if(typeof config.exclude === 'string'){
+		config.exclude = [config.exclude]
+	}
+	config.filesToExclude = config.filesToExclude.map(fileName=>new RegExp(fileName))
+
 	const font = await Jimp.loadFont(config.fontFile)
 	const glyphs = {
 		main:		colorText(font.pages[0].clone(), config.fontColorMain),

@@ -67,6 +67,4 @@ const argv = require('yargs')
 	})
 	.argv
 
-const config = JSON.parse(JSON.stringify(argv))
-config.filesToExclude = config.filesToExclude.map(fileName=>new RegExp(fileName))
-diffshot(config)
+diffshot(argv)
