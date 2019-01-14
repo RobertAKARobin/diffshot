@@ -18,7 +18,10 @@ const defaultConfig = {
 	textColorMeta: '00ffff',
 	outputImagePath: '_DIFFSHOT',
 	outputDocPath: '_DIFFSHOT/README.md',
-	exclude: [],
+	filesToExclude: [
+		'.*-lock\.json$',
+		'.*\.fnt$'
+	],
 	_: '*'
 }
 
@@ -38,10 +41,10 @@ async function main(){
 		const defaultValue = defaultConfig[configProperty]
 		config[configProperty] = (inputValue === undefined ? defaultValue : inputValue)
 	}
-	if(typeof config.exclude === 'string'){
-		config.exclude = [config.exclude]
+	if(typeof config.filesToExclude === 'string'){
+		config.filesToExclude = [config.filesToExclude]
 	}
-	config.exclude = config.exclude.map(fileName=>new RegExp(fileName))
+	config.filesToExclude = config.filesToExclude.map(fileName=>new RegExp(fileName))
 
 	const font = await Jimp.loadFont(config.textFontFile)
 	const glyphs = {
@@ -62,7 +65,7 @@ async function main(){
 		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`, '--'].concat(config._))
 		const fileNames = diffSummary.files
 			.map(file=>file.file)
-			.filter(fileName=>!config.exclude.find(regex=>regex.test(fileName)))
+			.filter(fileName=>!config.filesToExclude.find(regex=>regex.test(fileName)))
 			.sort()
 		const commit = {
 			message: rawCommit.message,
