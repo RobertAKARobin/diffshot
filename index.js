@@ -2,7 +2,10 @@
 
 const diffshot = require('./src/diffshot')
 const argv = require('yargs')
-	.usage('$0 [<options>] [<commit> [<commit>]] [--] [<path>...]')
+	.usage([
+		'$0 [<options>] [<commit> [<commit>]] [--] [<path>...]',
+		'Loop through a Git log and output a .png of the diff of each file in each commit.'
+	].join('\n'))
 	.alias('help', 'h')
 	.alias('version', 'v')
 	.options({
