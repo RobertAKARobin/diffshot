@@ -32,8 +32,9 @@ function pathify(input){
 		.toLowerCase()
 		.substring(0, 50)
 		.replace(/ /g, "-")
-		.replace(/[^a-zA-Z0-9-_\.]/g, "")
+		.replace(/[^a-zA-Z0-9-_]/g, "")
 		.replace(/-{2,}/g, "-")
+		.replace(/^-/,"")
 }
 
 const defaultConfig = {
