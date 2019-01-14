@@ -20,13 +20,13 @@ const argv = require('yargs')
 			type: 'boolean',
 			default: 'false'
 		},
-		'outputImagePath': {
+		'outputDirectory': {
 			type: 'string',
 			default: '_DIFFSHOT'
 		},
-		'outputDocPath': {
+		'outputFilename': {
 			type: 'string',
-			default: '_DIFFSHOT/README.md'
+			default: 'README.md'
 		},
 		'fontFile': {
 			type: 'string',

@@ -76,7 +76,7 @@ module.exports = async function(config){
 	}
 
 	if(config.doEmptyOutputImagePath){
-		await fs.emptyDir(`./${config.outputImagePath}`)
+		await fs.emptyDir(`./${config.outputDirectory}`)
 	}
 
 	const commitLog = (await git.log(config._)).all
@@ -104,7 +104,7 @@ module.exports = async function(config){
 			files: fileNames.map(fileName=>{
 				return {
 					name: fileName,
-					imagePath: `./${config.outputImagePath}/${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
+					imagePath: `${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
 					anchor: `${anchorify(rawCommit.message)}-${anchorify(fileName)}`
 				}
 			})
@@ -134,7 +134,7 @@ module.exports = async function(config){
 				// (font file, x coordinate to start painting, y coordinate to start painting, text content)
 				image.print(font, config.fontLineIndentPx, (config.fontLineHeightPx * lineIndex), line.replace(/\t/g, '   '))
 			})
-			await image.writeAsync(file.imagePath)
+			await image.writeAsync(`./${config.outputDirectory}/${file.imagePath}`)
 		}
 	}
 
@@ -158,5 +158,5 @@ module.exports = async function(config){
 		])
 	]
 
-	await fs.writeFileSync(`${config.outputDocPath}`, flatten(markdown).join('\n'))
+	await fs.writeFileSync(`./${config.outputDirectory}/${config.outputFilename}`, flatten(markdown).join('\n'))
 }
