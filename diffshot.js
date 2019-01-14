@@ -3,8 +3,9 @@
 const git = require('simple-git/promise')()
 const Jimp = require('jimp')
 const fs = require('fs-extra')
+const argv = require('yargs').argv
 
-const config = {
+const defaultConfig = {
 	imageWidthPx: 800,
 	imageBgColorHex: '000',
 	textFontFile: `${__dirname}/fonts/inconsolata_16.fnt`,
@@ -17,12 +18,17 @@ const config = {
 	textColorMeta: [, 255, 255],
 	outputDirectory: '_DIFFSHOT',
 	outputDocName: 'README.md',
+	_: '*'
 }
 
 main()
 
 async function main(){
-	const args = process.argv.slice(2)
+	const config = {}
+	for(let configProperty in defaultConfig){
+		config[configProperty] = (argv[configProperty] || defaultConfig[configProperty])
+	}
+
 	const font = await Jimp.loadFont(config.textFontFile)
 	const glyphs = {
 		main:		rgb(font.pages[0].clone(), config.textColorMain),
@@ -39,7 +45,7 @@ async function main(){
 	for(let commitIndex = 0, rawCommit = null; rawCommit = log[commitIndex]; commitIndex += 1){
 		const previousRawCommit = log[commitIndex + 1]
 		const previousHash = (previousRawCommit ?  previousRawCommit.hash.substring(0, 8) : '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
-		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(args))
+		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(config._))
 		const fileNames = diffSummary.files.map(file=>file.file).sort()
 		const commit = {
 			message: rawCommit.message,
