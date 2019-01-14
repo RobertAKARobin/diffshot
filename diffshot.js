@@ -46,7 +46,7 @@ async function main(){
 	for(let commitIndex = 0, rawCommit = null; rawCommit = log[commitIndex]; commitIndex += 1){
 		const previousRawCommit = log[commitIndex + 1]
 		const previousHash = (previousRawCommit ?  previousRawCommit.hash.substring(0, 8) : '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
-		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(config._))
+		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`, '--'].concat(config._))
 		const fileNames = diffSummary.files
 			.map(file=>file.file)
 			.filter(fileName=>!config.exclude.includes(fileName))
