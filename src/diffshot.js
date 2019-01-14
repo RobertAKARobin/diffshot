@@ -111,7 +111,7 @@ module.exports = async function(config){
 		for(let fileIndex = 0, file = null; file = commit.files[fileIndex]; fileIndex += 1){
 			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, '--', file.name])
 			const diffByLine = diff.split('\n')
-			const image = await (new Jimp(config.imageWidthPx, (config.fontLineHeightPx * (diffByLine.length - 1)), config.imageBgColor))
+			const image = await (new Jimp(config.imageWidthPx, (config.fontLineHeightPx * diffByLine.length), config.imageBgColor))
 	
 			diffByLine.unshift(
 				// Add a headline
