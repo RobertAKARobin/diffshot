@@ -9,7 +9,7 @@
   },
   "description": "Loop through a Git log and output a .png of the diff of each file in each commit.",
   "homepage": "https://github.com/RobertAKARobin/diffshot",
-  "license": "ISC",
+  "license": "MIT",
   "name": "diffshot",
-  "version": "1.0.3"
+  "version": "1.0.4"
 }
