@@ -3,13 +3,13 @@ const Jimp = require('jimp')
 const fs = require('fs-extra')
 
 module.exports = async function(config){
-	const font = await Jimp.loadFont(config.textFontFile)
+	const font = await Jimp.loadFont(config.fontFile)
 	const glyphs = {
-		main:		colorText(font.pages[0].clone(), config.textColorMain),
-		delete:		colorText(font.pages[0].clone(), config.textColorDelete),
-		add:		colorText(font.pages[0].clone(), config.textColorAdd),
-		headline:	colorText(font.pages[0].clone(), config.textColorHeadline),
-		meta:		colorText(font.pages[0].clone(), config.textColorMeta),
+		main:		colorText(font.pages[0].clone(), config.fontColorMain),
+		delete:		colorText(font.pages[0].clone(), config.fontColorDelete),
+		add:		colorText(font.pages[0].clone(), config.fontColorAdd),
+		headline:	colorText(font.pages[0].clone(), config.fontColorHeadline),
+		meta:		colorText(font.pages[0].clone(), config.fontColorMeta),
 	}
 
 	await fs.emptyDir(`./${config.outputImagePath}`)
@@ -42,7 +42,7 @@ module.exports = async function(config){
 		for(let fileIndex = 0, file = null; file = commit.files[fileIndex]; fileIndex += 1){
 			const diff = await git.diff([`${commit.prevHash}..${commit.hash}`, '--', file.name])
 			const diffByLine = diff.split('\n')
-			const image = await (new Jimp(config.imageWidthPx, (config.textLineHeightPx * (diffByLine.length - 1)), config.imageBgColor))
+			const image = await (new Jimp(config.imageWidthPx, (config.fontLineHeightPx * (diffByLine.length - 1)), config.imageBgColor))
 	
 			diffByLine.unshift(
 				`# ${commit.hash}: ${commit.message}`
@@ -57,7 +57,7 @@ module.exports = async function(config){
 					default:  glyphColor = glyphs.main
 				}
 				font.pages = [glyphColor]
-				image.print(font, config.textLineIndentPx, (config.textLineHeightPx * lineIndex), line.replace(/\t/g, '   '))
+				image.print(font, config.fontLineIndentPx, (config.fontLineHeightPx * lineIndex), line.replace(/\t/g, '   '))
 			})
 			await image.writeAsync(file.imagePath)
 		}

@@ -21,17 +21,37 @@ const argv = require('yargs')
 			type: 'string',
 			default: '_DIFFSHOT/README.md'
 		},
-		'textFontFile': {
+		'fontFile': {
 			type: 'string',
 			default: `${__dirname}/fonts/inconsolata_16.fnt`
 		},
-		'textLineIndentPx': {
+		'fontLineIndentPx': {
 			type: 'number',
 			default: 5
 		},
-		'textLineHeightPx': {
+		'fontLineHeightPx': {
 			type: 'number',
 			default: 20
+		},
+		'fontColorMain': {
+			type: 'string',
+			default: 'ffffff'
+		},
+		'fontColorDelete': {
+			type: 'string',
+			default: 'ff0000'
+		},
+		'fontColorAdd': {
+			type: 'string',
+			default: '00ff00'
+		},
+		'fontColorHeadline': {
+			type: 'string',
+			default: 'ffff00'
+		},
+		'fontColorMeta': {
+			type: 'string',
+			default: '00ffff'
 		},
 		'imageWidthPx': {
 			type: 'number',
@@ -40,26 +60,6 @@ const argv = require('yargs')
 		'imageBgColor': {
 			type: 'string',
 			default: '000000'
-		},
-		'textColorMain': {
-			type: 'string',
-			default: 'ffffff'
-		},
-		'textColorDelete': {
-			type: 'string',
-			default: 'ff0000'
-		},
-		'textColorAdd': {
-			type: 'string',
-			default: '00ff00'
-		},
-		'textColorHeadline': {
-			type: 'string',
-			default: 'ffff00'
-		},
-		'textColorMeta': {
-			type: 'string',
-			default: '00ffff'
 		}
 	})
 	.argv
