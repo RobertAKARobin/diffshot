@@ -1,6 +1,6 @@
 {
   "author": "Robin Thomas <contact@robertakarobin.com> (https://www.robertakarobin.com)",
-  "bin": "./diffshot.js",
+  "bin": "./index.js",
   "dependencies": {
     "fs-extra": "^7.0.1",
     "jimp": "^0.6.0",
