@@ -18,6 +18,7 @@ const defaultConfig = {
 	textColorMeta: '00ffff',
 	outputImagePath: '_DIFFSHOT',
 	outputDocPath: '_DIFFSHOT/README.md',
+	exclude: [],
 	_: '*'
 }
 
@@ -46,7 +47,10 @@ async function main(){
 		const previousRawCommit = log[commitIndex + 1]
 		const previousHash = (previousRawCommit ?  previousRawCommit.hash.substring(0, 8) : '4b825dc642cb6eb9a060e54bf8d69288fbee4904')
 		const diffSummary = await git.diffSummary([`${previousHash}..${rawCommit.hash}`].concat(config._))
-		const fileNames = diffSummary.files.map(file=>file.file).sort()
+		const fileNames = diffSummary.files
+			.map(file=>file.file)
+			.filter(fileName=>!config.exclude.includes(fileName))
+			.sort()
 		const commit = {
 			message: rawCommit.message,
 			anchor: anchorify(rawCommit.message),
