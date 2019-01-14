@@ -21,7 +21,7 @@ $ diffshot
 
 The result is a directory named `_DIFFSHOT` that contains a bunch of images like this:
 
-![Diffshot sample](image.png)
+![Diffshot sample](https://raw.githubusercontent.com/RobertAKARobin/diffshot/master/image.png)
 
 ...and a file named `README.md` that lists the text and images of each diff.
 

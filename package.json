@@ -8,8 +8,8 @@
     "yargs": "^12.0.5"
   },
   "description": "Loop through a Git log and output a .png of the diff of each file in each commit.",
-  "homepage": "https://github.com/RobertAKARobin/diffshot-js",
+  "homepage": "https://github.com/RobertAKARobin/diffshot",
   "license": "ISC",
   "name": "diffshot",
-  "version": "1.0.1"
+  "version": "1.0.3"
 }
