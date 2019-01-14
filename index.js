@@ -16,6 +16,10 @@ const argv = require('yargs')
 				'^.*\.fnt$'
 			]
 		},
+		'doEraseOutputImagePath': {
+			type: 'boolean',
+			default: 'false'
+		},
 		'outputImagePath': {
 			type: 'string',
 			default: '_DIFFSHOT'

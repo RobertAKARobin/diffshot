@@ -74,7 +74,9 @@ module.exports = async function(config){
 		meta:		colorText(font.pages[0].clone(), config.fontColorMeta),
 	}
 
-	await fs.emptyDir(`./${config.outputImagePath}`)
+	if(config.doEmptyOutputImagePath){
+		await fs.emptyDir(`./${config.outputImagePath}`)
+	}
 
 	const commitLog = (await git.log(config._)).all
 	const commits = []
