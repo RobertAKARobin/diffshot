@@ -3,7 +3,7 @@
 const git = require('simple-git/promise')()
 const Jimp = require('jimp')
 const fs = require('fs-extra')
-const argv = require('yargs').argv
+const yargs = require('yargs')
 
 const defaultConfig = {
 	imageWidthPx: 800,
@@ -21,6 +21,13 @@ const defaultConfig = {
 	exclude: [],
 	_: '*'
 }
+
+yargs
+	.usage('$0 [<options>] [<commit> [<commit>]] [--] [<path>...]')
+	.alias('help', 'h')
+	.alias('version', 'v')
+
+const argv = yargs.argv
 
 main()
 
