@@ -16,8 +16,8 @@ const defaultConfig = {
 	textColorAdd: [, 255],
 	textColorHeadline: [255, 255],
 	textColorMeta: [, 255, 255],
-	outputDirectory: '_DIFFSHOT',
-	outputDocName: 'README.md',
+	outputImagePath: '_DIFFSHOT',
+	outputDocPath: '_DIFFSHOT/README.md',
 	_: '*'
 }
 
@@ -38,7 +38,7 @@ async function main(){
 		meta:		rgb(font.pages[0].clone(), config.textColorMeta),
 	}
 
-	await fs.emptyDir(`./${config.outputDirectory}`)
+	await fs.emptyDir(`./${config.outputImagePath}`)
 
 	const log = JSON.parse(JSON.stringify((await git.log()).all))
 	const commits = []
@@ -55,7 +55,7 @@ async function main(){
 			files: fileNames.map(fileName=>{
 				return {
 					name: fileName,
-					imagePath: `./${config.outputDirectory}/${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
+					imagePath: `./${config.outputImagePath}/${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
 					anchor: `${anchorify(rawCommit.message)}-${anchorify(fileName)}`
 				}
 			})
@@ -105,7 +105,7 @@ async function main(){
 		])
 	]
 
-	await fs.writeFileSync(`${config.outputDirectory}/${config.outputDocName}`, flatten(markdown).join('\n'))
+	await fs.writeFileSync(`${config.outputDocPath}`, flatten(markdown).join('\n'))
 }
 
 function anchorify(input){
