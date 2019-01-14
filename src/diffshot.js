@@ -139,7 +139,8 @@ module.exports = async function(config){
 	}
 
 	const markdown = [
-		'# Diffshot',
+		'# Commit history' + (config._ ? ` (${config._})` : ''),
+		'This visual commit history generated with [Diffshot](https://github.com/RobertAKARobin/diffshot/wiki).',
 		'## Contents',
 		commits.map(commit=>[
 			`- [${commit.hash}: ${commit.message}](#${commit.anchor})`,

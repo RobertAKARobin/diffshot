@@ -4,6 +4,8 @@ Loops through a Git log and outputs a .png of the diff of each file in each comm
 
 Useful for writing coding tutorials, and understanding what you did.
 
+For an example, check the [wiki](https://github.com/RobertAKARobin/diffshot/wiki).
+
 ## Installation
 
 ```sh
