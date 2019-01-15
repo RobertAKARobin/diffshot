@@ -77,6 +77,8 @@ module.exports = async function(config){
 
 	if(config.doEmptyOutputImagePath){
 		await fs.emptyDir(`./${config.outputDirectory}`)
+	}else{
+		await fs.ensureDir(`./${config.outputDirectory}`)
 	}
 
 	const commitLog = (await git.log(config._)).all
