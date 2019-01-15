@@ -9,7 +9,7 @@ const argv = yargs
 	].join('\n'))
 	.alias('help', 'h')
 	.alias('version', 'v')
-	.wrap(100)
+	.wrap(yargs.terminalWidth())
 	.options({
 		'filesToExclude': {
 			type: 'array',
