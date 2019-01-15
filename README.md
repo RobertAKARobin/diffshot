@@ -42,7 +42,7 @@ Options:
   --help, -h                Show help                                                      [boolean]
   --version, -v             Show version number                                            [boolean]
   --filesToExclude                                  [array] [default: ["^.*-lock.json$","^.*.fnt$"]]
-  --doEraseOutputImagePath                                              [boolean] [default: "false"]
+  --doEraseOutputDirectory                                              [boolean] [default: "false"]
   --outputDirectory                                                  [string] [default: "_DIFFSHOT"]
   --outputFilename                                                   [string] [default: "README.md"]
   --fontFile          [string] [default: "~/npm-install-location/diffshot/fonts/inconsolata_16.fnt"]
