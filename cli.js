@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 const diffshot = require('./src/diffshot')
-const argv = require('yargs')
+const yargs = require('yargs')
+const argv = yargs
 	.usage([
 		'$0 [<options>] [<commit> [<commit>]] [--] [<path>...]',
-		'Loop through a Git log and output a .png of the diff of each file in each commit.'
+		'Loops through a Git log and makes an image of the diff of each file.'
 	].join('\n'))
 	.alias('help', 'h')
 	.alias('version', 'v')
+	.wrap(100)
 	.options({
 		'filesToExclude': {
 			type: 'array',
@@ -69,6 +71,11 @@ const argv = require('yargs')
 			default: '000000'
 		}
 	})
+	.example('$0', 'Will make an image of the diff of each file in each commit.')
+	.example('$0 index.js', 'Will make an image of the diff of index.js in each commit.')
+	.example('$0 index.js package.json', 'Will make an image of the diffs of index.js and package.json in each commit.')
+	.example('$0 acb5f13..ad8cfc9 index.js package.json', 'Will make an image of the diffs of index.js and package.json from commit acb5f13 through ad8cfc9.')
+	.example('$0  --filesToExclude=package.json --filesToExclude=^.*-lock.json$', 'Will make an image of each file in each commit, excluding those named package.json and those ending with "-lock.json"')
 	.argv
 
 diffshot(argv)
