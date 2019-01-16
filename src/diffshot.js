@@ -75,7 +75,7 @@ module.exports = async function(config){
 		meta:		colorText(font.pages[0].clone(), config.fontColorMeta),
 	}
 
-	if(config.doEmptyOutputImagePath){
+	if(config.doEraseOutputDirectory){
 		await fs.emptyDir(`./${config.outputDirectory}`)
 	}else{
 		await fs.ensureDir(`./${config.outputDirectory}`)

@@ -18,7 +18,7 @@ const argv = yargs
 				'^.*\.fnt$'
 			]
 		},
-		'doEraseOutputImagePath': {
+		'doEraseOutputDirectory': {
 			type: 'boolean',
 			default: 'false'
 		},
