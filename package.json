@@ -4,12 +4,12 @@
   "dependencies": {
     "fs-extra": "^7.0.1",
     "jimp": "^0.6.0",
-    "simple-git": "^1.107.0",
+    "simple-git": "git@github.com:RobertAKARobin/git-js.git#next",
     "yargs": "^12.0.5"
   },
   "description": "Loop through a Git log and output a .png of the diff of each file in each commit.",
   "homepage": "https://github.com/RobertAKARobin/diffshot",
   "license": "MIT",
   "name": "diffshot",
-  "version": "1.0.7"
+  "version": "1.0.8"
 }

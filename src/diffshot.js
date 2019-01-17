@@ -98,14 +98,15 @@ module.exports = async function(config){
 				})
 			})
 			.sort()
+		const headline = rawCommit.message.split('\n')[0]
 		const commit = {
-			message: rawCommit.message,
-			anchor: anchorify(rawCommit.message), // Markdown headline anchor
+			headline,
+			body: rawCommit.body.replace(/\n/g, '<br>\n'),
+			anchor: anchorify(headline),
 			hash: rawCommit.hash.substring(0, 8),
 			prevHash: previousHash,
 			files: fileNames.map(fileName=>{
-				const pathMessage = rawCommit.message
-					.split('\n')[0]
+				const pathMessage = headline
 					.toLowerCase()
 					.substring(0,50)
 					.replace(/ /g, '-')
@@ -162,17 +163,18 @@ module.exports = async function(config){
 		'This visual commit history generated with [Diffshot](https://github.com/RobertAKARobin/diffshot).',
 		'## Contents',
 		commits.map(commit=>[
-			`- [${commit.hash}: ${commit.message}](#${commit.anchor})`,
+			`- [${commit.hash}: ${commit.headline}](#${commit.anchor})`,
 			commit.files.map(file=>[
 				`\t- [${file.name}](#${file.anchor})`
 			])
 		]),
 		commits.map(commit=>[
-			`# ${commit.message}`,
+			`# ${commit.headline}`,
 			`> ${commit.hash}`,
+			`\n${commit.body}`,
 			commit.files.map(file=>[
-				`## ${commit.message}: ${file.name}`,
-				`![${commit.message}: ${file.name}](${file.imagePath})`
+				`## ${commit.headline}: ${file.name}`,
+				`![${commit.headline}: ${file.name}](${file.imagePath})`
 			])
 		])
 	]
