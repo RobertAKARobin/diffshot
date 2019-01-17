@@ -133,8 +133,7 @@ module.exports = async function(config){
 			const image = await (new Jimp(config.imageWidthPx, (config.fontLineHeightPx * diffByLine.length), config.imageBgColor))
 	
 			diffByLine.unshift(
-				// Add a headline
-				`# ${commit.hash}: ${commit.message}`
+				`# ${commit.hash}: ${commit.headline}`
 			)
 			diffByLine.forEach((line, lineIndex)=>{
 				let glyphColor
