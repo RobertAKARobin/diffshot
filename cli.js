@@ -18,6 +18,10 @@ const argv = yargs
 				'^.*\.fnt$'
 			]
 		},
+		'isOldestCommitFirst': {
+			type: 'boolean',
+			default: true
+		},
 		'doEraseOutputDirectory': {
 			type: 'boolean',
 			default: 'false'

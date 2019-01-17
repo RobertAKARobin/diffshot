@@ -42,6 +42,7 @@ Options:
   --help, -h                Show help                                                      [boolean]
   --version, -v             Show version number                                            [boolean]
   --filesToExclude                                  [array] [default: ["^.*-lock.json$","^.*.fnt$"]]
+  --isOldestCommitFirst                                                    [boolean] [default: true]
   --doEraseOutputDirectory                                              [boolean] [default: "false"]
   --outputDirectory                                                  [string] [default: "_DIFFSHOT"]
   --outputFilename                                                   [string] [default: "README.md"]

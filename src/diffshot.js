@@ -82,7 +82,7 @@ module.exports = async function(config){
 	}
 
 	const commitLog = (await git.log(config._)).all
-	const commits = []
+	let commits = []
 	for(let commitIndex = 0, rawCommit = null; rawCommit = commitLog[commitIndex]; commitIndex += 1){
 		const previousRawCommit = commitLog[commitIndex + 1]
 		// This is the hash of SHA1("tree 0\0"). It's a constant across all Git repos.
@@ -138,6 +138,10 @@ module.exports = async function(config){
 			})
 			await image.writeAsync(`./${config.outputDirectory}/${file.imagePath}`)
 		}
+	}
+
+	if(config.isOldestCommitFirst){
+		commits = commits.reverse()
 	}
 
 	const markdown = [
