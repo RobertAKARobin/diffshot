@@ -5,8 +5,8 @@ const fs = require('fs-extra')
 function anchorify(input){
 	return input
 		.toLowerCase()
-		.replace(/ /g, "-")
-		.replace(/[^a-zA-Z0-9\-_]/g, "")
+		.replace(/ /g, '-')
+		.replace(/[^a-zA-Z0-9\-_]/g, '')
 }
 
 function colorText(jimp, hexInput){
@@ -30,11 +30,11 @@ function flatten(nestedArray){
 function pathify(input){
 	return input
 		.toLowerCase()
-		.substring(0, 50)
-		.replace(/ /g, "-")
-		.replace(/[^a-zA-Z0-9-_]/g, "")
-		.replace(/-{2,}/g, "-")
-		.replace(/^-/,"")
+		.replace(/ /g, '-')
+		.replace(/[^a-zA-Z0-9-_\.]/g, '')
+		.replace(/-{2,}/g, '-')
+		.replace(/\.{2,}/g, '.')
+		.replace(/^-/, '')
 }
 
 const defaultConfig = {
@@ -104,9 +104,22 @@ module.exports = async function(config){
 			hash: rawCommit.hash.substring(0, 8),
 			prevHash: previousHash,
 			files: fileNames.map(fileName=>{
+				const pathMessage = rawCommit.message
+					.split('\n')[0]
+					.toLowerCase()
+					.substring(0,50)
+					.replace(/ /g, '-')
+					.replace(/[^a-zA-Z0-9-_]/g, '')
+				const pathFilename = fileName
+					.replace(/ /g, '-')
+					.replace(/[^a-zA-Z0-9-_\.]/g, '')
+				const imagePath = `${pathMessage}.${pathFilename}.png`
+					.replace(/-{2,}/g, '-')
+					.replace(/\.{2,}/g, '.')
+					.replace(/^-/, '')
 				return {
 					name: fileName,
-					imagePath: `${pathify(rawCommit.message)}.${pathify(fileName)}.png`,
+					imagePath,
 					anchor: `${anchorify(rawCommit.message)}-${anchorify(fileName)}`
 				}
 			})
