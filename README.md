@@ -1,5 +1,7 @@
 # Diffshot
 
+[![NPM version](https://img.shields.io/npm/v/diffshot.svg)](https://www.npmjs.com/package/diffshot)
+
 Loops through a Git log and makes an image of the diff of each file, like this:
 
 ![Diffshot sample](https://raw.githubusercontent.com/RobertAKARobin/diffshot/master/image.png)
